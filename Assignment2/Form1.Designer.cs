@@ -48,9 +48,9 @@
             lblMakeModel = new Label();
             lblYear = new Label();
             lblApptDate = new Label();
-            textBox1 = new TextBox();
-            textBox2 = new TextBox();
-            dateTimePicker1 = new DateTimePicker();
+            tbMakeModel = new TextBox();
+            tbYear = new TextBox();
+            dateApptPicker = new DateTimePicker();
             lblProblem = new Label();
             richtbProblem = new RichTextBox();
             btnBookAppt = new Button();
@@ -205,11 +205,11 @@
             // 
             // lblErrorMessage
             // 
-            lblErrorMessage.Font = new Font("Segoe UI", 12F);
+            lblErrorMessage.Font = new Font("Segoe UI", 11.5F);
             lblErrorMessage.ForeColor = Color.Red;
             lblErrorMessage.Location = new Point(19, 371);
             lblErrorMessage.Name = "lblErrorMessage";
-            lblErrorMessage.Size = new Size(383, 92);
+            lblErrorMessage.Size = new Size(407, 92);
             lblErrorMessage.TabIndex = 16;
             lblErrorMessage.Text = "Error Messages";
             lblErrorMessage.TextAlign = ContentAlignment.BottomLeft;
@@ -244,29 +244,29 @@
             lblApptDate.TabIndex = 19;
             lblApptDate.Text = "Appointment Date:";
             // 
-            // textBox1
+            // tbMakeModel
             // 
-            textBox1.Font = new Font("Segoe UI", 12F);
-            textBox1.Location = new Point(598, 13);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(250, 29);
-            textBox1.TabIndex = 20;
+            tbMakeModel.Font = new Font("Segoe UI", 12F);
+            tbMakeModel.Location = new Point(598, 13);
+            tbMakeModel.Name = "tbMakeModel";
+            tbMakeModel.Size = new Size(250, 29);
+            tbMakeModel.TabIndex = 20;
             // 
-            // textBox2
+            // tbYear
             // 
-            textBox2.Font = new Font("Segoe UI", 12F);
-            textBox2.Location = new Point(598, 57);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(250, 29);
-            textBox2.TabIndex = 21;
+            tbYear.Font = new Font("Segoe UI", 12F);
+            tbYear.Location = new Point(598, 57);
+            tbYear.Name = "tbYear";
+            tbYear.Size = new Size(250, 29);
+            tbYear.TabIndex = 21;
             // 
-            // dateTimePicker1
+            // dateApptPicker
             // 
-            dateTimePicker1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dateTimePicker1.Location = new Point(598, 101);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(250, 29);
-            dateTimePicker1.TabIndex = 22;
+            dateApptPicker.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dateApptPicker.Location = new Point(598, 101);
+            dateApptPicker.Name = "dateApptPicker";
+            dateApptPicker.Size = new Size(250, 29);
+            dateApptPicker.TabIndex = 22;
             // 
             // lblProblem
             // 
@@ -297,6 +297,7 @@
             btnBookAppt.TabIndex = 25;
             btnBookAppt.Text = "Book Appointment";
             btnBookAppt.UseVisualStyleBackColor = true;
+            btnBookAppt.Click += btnBookAppt_Click;
             // 
             // btnReset
             // 
@@ -308,6 +309,7 @@
             btnReset.TabIndex = 26;
             btnReset.Text = "Reset";
             btnReset.UseVisualStyleBackColor = true;
+            btnReset.Click += btnReset_Click;
             // 
             // btnClose
             // 
@@ -331,6 +333,7 @@
             btnPrefill.TabIndex = 28;
             btnPrefill.Text = "Pre-fill";
             btnPrefill.UseVisualStyleBackColor = true;
+            btnPrefill.Click += btnPrefill_Click;
             // 
             // Form1
             // 
@@ -343,9 +346,9 @@
             Controls.Add(btnBookAppt);
             Controls.Add(richtbProblem);
             Controls.Add(lblProblem);
-            Controls.Add(dateTimePicker1);
-            Controls.Add(textBox2);
-            Controls.Add(textBox1);
+            Controls.Add(dateApptPicker);
+            Controls.Add(tbYear);
+            Controls.Add(tbMakeModel);
             Controls.Add(lblApptDate);
             Controls.Add(lblYear);
             Controls.Add(lblMakeModel);
@@ -395,9 +398,9 @@
         private Label lblMakeModel;
         private Label lblYear;
         private Label lblApptDate;
-        private TextBox textBox1;
-        private TextBox textBox2;
-        private DateTimePicker dateTimePicker1;
+        private TextBox tbMakeModel;
+        private TextBox tbYear;
+        private DateTimePicker dateApptPicker;
         private Label lblProblem;
         private RichTextBox richtbProblem;
         private Button btnBookAppt;
