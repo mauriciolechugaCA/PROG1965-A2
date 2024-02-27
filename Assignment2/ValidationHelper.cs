@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Assignment2
 {
     internal class ValidationHelper
     {
-        public static string Capitalize(string userInput)
+        protected ValidationHelper() { } // Added 'protected' because VSCode suggested it. Don't know why.
+
+        public static string Capitalize(string userInput)   // Validates that there is no empty input.
+                                                            // Formats the input and returns it.
         {
             if (userInput == null)
                 {
@@ -21,8 +25,8 @@ namespace Assignment2
             
             return userInput;
         }
-        // Method that converts everything to lower case
-        private static string ConvertToLowerCase(string userInput)
+
+        private static string ConvertToLowerCase(string userInput)  // Converts to lower for easier comparison
         {
             char[] chars = userInput.ToCharArray();
 
@@ -34,17 +38,15 @@ namespace Assignment2
             return new string (chars);
         }
         
-        // Method that converts the first letter of each word
-        private static string CapitalizeFirstLetters(string userInput)
+        private static string CapitalizeFirstLetters(string userInput)  // Capitalizes the first letter of every word.
         {
             if (string.IsNullOrEmpty(userInput))
             {
-                return userInput = " ";
+                return " ";
             }
-            // Creates an array with words after each space
+
             string[] words = userInput.Split(' ');
 
-            // Runs a loop of each word and capitalizes the first letter
             for (int i = 0;i < words.Length;i++)
             {
                 char[] chars = words[i].ToCharArray();
@@ -52,14 +54,12 @@ namespace Assignment2
                 words[i] = new string (chars);
             }
 
-            // Returns the new string
             return string.Join (" ", words);
         }
 
-        // Validates that postal code follows the pattern and reformats it accordingly
-        public static bool IsValidPostalCode(string userInput, out string reformatPostalCode)
+        public static bool IsValidPostalCode(string userInput, out string formattedPostalCode)  // Formats code to 'X0X 0X0' pattern
         {
-            reformatPostalCode = string.Empty;
+            formattedPostalCode = string.Empty;
 
             if (string.IsNullOrEmpty(userInput))
             {
@@ -73,28 +73,28 @@ namespace Assignment2
             {
                 return false;
             }
-            
-            reformatPostalCode = $"{cleanPostalCode.Substring(0,3).ToUpper()} {cleanPostalCode.Substring(3,3).ToUpper()}";
+
+            formattedPostalCode = $"{cleanPostalCode.Substring(0, 3).ToUpper()} {cleanPostalCode.Substring(3, 3).ToUpper()}";
             return true;
         }
 
-        // Validates that the province code is one in the list
-        public static bool IsValidProvinceCode(string userInput)
+        public static bool IsValidProvinceCode(string userInput)    // Checks that code exists in the list
+                                                                    // and returns capitalized.
         {
             if (string.IsNullOrEmpty(userInput))
             {
                 return false;
             }
-
-            string[] provinces = { "AB", "BC", "MB", "NB", "NL", "NT", "NS", "NU", "ON", "PE", "QC", "SK", "YT" };
+            
             userInput = userInput.Trim().ToUpper();
+            string[] provinces = { "AB", "BC", "MB", "NB", "NL", "NT", "NS", "NU", "ON", "PE", "QC", "SK", "YT" };
             return Array.Exists(provinces, provinceCode => provinceCode.Equals(userInput));
         }
 
-        // Validates that the phones are in required pattern
-        public static bool IsValidPhoneNumber(string userInput, out string reformatPhone)
+        public static bool IsValidPhoneNumber(string userInput, out string formattedPhone)  // Checks that is a valid number
+                                                                                            // and formats to the correct pattern.
         {
-            reformatPhone = string.Empty;
+            formattedPhone = string.Empty;
 
             if (string.IsNullOrEmpty(userInput))
             {
@@ -107,8 +107,43 @@ namespace Assignment2
                 return false;
             }
 
-            reformatPhone = $"{cleanPhone.Substring(0,3)}-{cleanPhone.Substring(3,3)}-{cleanPhone.Substring(6)}";
+            formattedPhone = $"{cleanPhone.Substring(0, 3)}-{cleanPhone.Substring(3, 3)}-{cleanPhone.Substring(6)}";
             return true;
+        }
+
+        public static bool IsEmailValid(string userInput, out string formattedEmail)    // Checks that email is in valid format
+        {
+            formattedEmail = string.Empty;
+
+            if (string.IsNullOrEmpty(userInput))
+            {
+                return false;
+            }
+
+            Regex regex = new Regex(@"^[A-Za-z0-9]+@[A-Za-z0-9.]+\.[A-Z|a-z]{2,}$");
+            if (!regex.IsMatch(userInput))
+            {
+                return false;
+            }
+
+            formattedEmail = userInput.ToLower().Trim();
+            return true;
+        }
+
+        public static bool IsYearValid(string userInput)    // Method that checks that year is current + 1
+        {
+            if (int.TryParse(userInput, out int validYear))
+            {
+                int currentYear = DateTime.Now.Year;
+                return validYear >= 1900 && validYear <= currentYear + 1;
+            }
+
+            return false;
+        }
+
+        public static bool IsDateFuture(DateTime selectedDate)  // Method that validates if date picked is in the future
+        {
+            return selectedDate >= DateTime.Now;
         }
     }
 }

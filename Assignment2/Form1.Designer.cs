@@ -205,7 +205,7 @@
             // 
             // lblErrorMessage
             // 
-            lblErrorMessage.Font = new Font("Segoe UI", 11.5F);
+            lblErrorMessage.Font = new Font("Segoe UI", 10F);
             lblErrorMessage.ForeColor = Color.Red;
             lblErrorMessage.Location = new Point(19, 371);
             lblErrorMessage.Name = "lblErrorMessage";
