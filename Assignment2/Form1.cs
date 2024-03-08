@@ -3,7 +3,7 @@ using System.Text;
 /*
  * Assignment 2 - PROG1965
  * 
- * March 9th, 2024
+ * March 16th, 2024
  * 
  * Fernando Carvalho de Souza
  * Mauricio Lechuga
@@ -14,8 +14,9 @@ namespace Assignment2
     /// <summary>
     /// 
     /// 1.  When the email is entered, Capitalize() is not working on the rest of inputs.
-    /// 2.  We need to fix the phone section. We need to check for one of them at least.
-    /// 3.  I am not sure where to place the SaveToFile method so it only saves when everything is valid.
+    ///     The email validation function is not working even though I checked the regex.
+    ///     
+    /// 2.  I am not sure where to place the SaveToFile method so it only saves when everything is valid.
     ///     I know it must be somewhere in the first IF, but it's confusing with so many checks.
     ///     
     /// </summary>
@@ -122,11 +123,11 @@ namespace Assignment2
                 }
             }
 
-            ///////////////////////////////////////////////////////////////////////////////
-            ///
-            /// e.	Either a home or cell phone must be provided … both are fine, but not mandatory
-            /// 
-            ///////////////////////////////////////////////////////////////////////////////
+            // Validates that at least one of the phone numbers are entered
+            if (string.IsNullOrEmpty(tbHomePhone.Text) && string.IsNullOrEmpty(tbCellPhone.Text))
+            {
+                errorMessages.AppendLine("Please provide a home phone or a cell phone number.");
+            }
 
             string homePhone = tbHomePhone.Text;    // Validating home phone
             bool isHomePhoneValid = ValidationHelper.IsValidPhoneNumber(homePhone, out string reformatHomePhone);
