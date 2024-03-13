@@ -14,17 +14,14 @@ namespace Assignment2
     /// <summary>
     /// 
     /// 1.  When the email is entered, Capitalize() is not working on the rest of inputs.
-    ///     The email validation function is not working even though I checked the regex.
-    ///     
-    /// 2.  I am not sure where to place the SaveToFile method so it only saves when everything is valid.
-    ///     I know it must be somewhere in the first IF, but it's confusing with so many checks.
+    /// 2.  The email validation function is not working even though I checked the regex.
     ///     
     /// </summary>
-    public partial class Form1 : Form
+    public partial class CarMaintenanceBooking : Form
     {
         private string fileName = "appointments.txt";
 
-        public Form1()
+        public CarMaintenanceBooking()
         {
             InitializeComponent();
             dateApptPicker.Value = DateTime.Now;
@@ -181,24 +178,23 @@ namespace Assignment2
             
             string errorMessage  = errorMessages.ToString().Trim(); // Prints all the errors for missing information.
 
-            if (!string.IsNullOrEmpty(errorMessage))
+            if (!string.IsNullOrEmpty(errorMessage)) // If there is an error, it will be displayed
             {
                 lblErrorMessage.Text = errorMessage;
             }
             else
             {
-                lblErrorMessage.Text = string.Empty;
+                lblErrorMessage.Text = string.Empty; // If there is no error, file will be saved and a message will be displayed
+
+                string appointmentInfo = GetAppointmentInfo();  // Saves to file
+
+                SaveToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName), appointmentInfo);
+
+                string GetAppointmentInfo()
+                {
+                    return $"Date: {dateApptPicker.Value}, Name: {tbCustomerName.Text}, Address: {tbAddress.Text}, {tbCity.Text}, {tbProvince.Text}, {tbPostalCode.Text}, Phones: {tbHomePhone.Text} / {tbCellPhone.Text}, Email: {tbEmail.Text}, Car Info: {tbYear.Text} {tbMakeModel.Text}";
+                }
             }
-
-            string appointmentInfo = GetAppointmentInfo();
-
-            SaveToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName), appointmentInfo);
-
-            string GetAppointmentInfo()
-            {
-                return $"Date: {dateApptPicker.Value}, Name: {tbCustomerName.Text}, Address: {tbAddress.Text}, {tbCity.Text}, {tbProvince.Text}, {tbPostalCode.Text}, Phones: {tbHomePhone.Text} / {tbCellPhone.Text}, Email: {tbEmail.Text}, Car Info: {tbYear.Text} {tbMakeModel.Text}";
-            }
-
         }
 
         // Clears all fields and message box
@@ -228,7 +224,7 @@ namespace Assignment2
             tbPostalCode.Text = "n2l4n7";
             tbHomePhone.Text = "1234567890";
             tbCellPhone.Text = "9876543210";
-            tbEmail.Text = "random@name.com";
+            tbEmail.Text = "RANDOM@NAME.COM";
             tbMakeModel.Text = "subaru forester";
             tbYear.Text = "2020";
         }
@@ -252,7 +248,7 @@ namespace Assignment2
                 {
                     if (!fileExists)
                     {
-                        sw.WriteLine("Date | Name | Address | Phones | Email | Car info");
+                        sw.WriteLine("Date\t\tName\t\tAddress\t\tCity\t\tProvince\t\tPostal Code\t\tPhones\t\tEmail\t\tCar Info");
                     }
                     sw.WriteLine(content);
                 }

@@ -1,6 +1,6 @@
 ﻿namespace Assignment2
 {
-    partial class Form1
+    partial class CarMaintenanceBooking
     {
         /// <summary>
         ///  Required designer variable.

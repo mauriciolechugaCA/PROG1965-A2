@@ -114,20 +114,23 @@ namespace Assignment2
         public static bool IsEmailValid(string userInput, out string formattedEmail)    // Checks that email is in valid format
         {
             formattedEmail = string.Empty;
+            Regex regex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
 
             if (string.IsNullOrEmpty(userInput))
             {
                 return false;
             }
 
-            Regex regex = new Regex(@"^[A-Za-z0-9]+@[A-Za-z0-9.]+\.[A-Z|a-z]{2,}$");
-            if (!regex.IsMatch(userInput))
+            else if (!regex.IsMatch(userInput))
             {
                 return false;
             }
+            else
+            {
+                formattedEmail = userInput.ToLower().Trim();
+                return true;
+            }
 
-            formattedEmail = userInput.ToLower().Trim();
-            return true;
         }
 
         public static bool IsYearValid(string userInput)    // Method that checks that year is current + 1
