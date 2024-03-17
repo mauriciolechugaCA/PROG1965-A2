@@ -143,7 +143,10 @@ namespace Assignment2
 
         public static bool IsDateFuture(DateTime selectedDate)  // Method that validates if date picked is in the future
         {
-            return selectedDate >= DateTime.Now;
+            //return selectedDate >= DateTime.Now;
+
+            //Changing for DateTime.Today. The "DateTime.Now" returns the time too. "DateTime.Today" returns only the date
+            return selectedDate >= DateTime.Today;
         }
     }
 }

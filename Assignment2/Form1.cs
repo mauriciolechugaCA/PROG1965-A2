@@ -15,9 +15,11 @@ namespace Assignment2
     /// 
     /// 1.  When the email is entered, Capitalize() is not working on the rest of inputs.
     ///     The email validation function is not working even though I checked the regex.
+    ///     DONE
     ///     
     /// 2.  I am not sure where to place the SaveToFile method so it only saves when everything is valid.
     ///     I know it must be somewhere in the first IF, but it's confusing with so many checks.
+    ///     DONE
     ///     
     /// </summary>
     public partial class Form1 : Form
@@ -27,7 +29,7 @@ namespace Assignment2
         public Form1()
         {
             InitializeComponent();
-            dateApptPicker.Value = DateTime.Now;
+            dateApptPicker.Value = DateTime.Today;
         }
 
         private void Form1_Load(object sender, EventArgs e) // Clears the error label
@@ -121,6 +123,55 @@ namespace Assignment2
                 {
                     tbEmail.Text = reformatEmail;
                 }
+                //Added the else to write the error message
+                else
+                {
+                    errorMessages.AppendLine("Please provide a valid email.");
+                    tbEmail.Focus();
+                }
+
+                //If the email is not empty, the fields need to be checked, but are not mandatory
+                if (!string.IsNullOrEmpty(tbAddress.Text)) // Address
+                {
+                    tbAddress.Text = ValidationHelper.Capitalize(tbAddress.Text);
+                }
+
+                if (!string.IsNullOrEmpty(tbCity.Text))  // City
+                {
+                    tbCity.Text = ValidationHelper.Capitalize(tbCity.Text);
+                }
+
+                if (!string.IsNullOrEmpty(tbProvince.Text))  // Province code
+                {
+                    string provinceCode = tbProvince.Text;
+                    bool isProvinceValid = ValidationHelper.IsValidProvinceCode(provinceCode);
+                    if (isProvinceValid)
+                    {
+                        tbProvince.Text = provinceCode.ToUpper();
+                    }
+                    else
+                    {
+                        errorMessages.AppendLine("A valid Canadian two-letter province code is required.");
+                        tbProvince.Focus();
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(tbPostalCode.Text))    // Postal code
+                {
+                    string postalCode = tbPostalCode.Text;  // Validates Postal Code
+                    bool isPostalValid = ValidationHelper.IsValidPostalCode(postalCode, out string reformatPostalCode);
+                    if (isPostalValid)
+                    {
+                        tbPostalCode.Text = reformatPostalCode;
+                    }
+                    else
+                    {
+                        errorMessages.AppendLine("A valid Canadian 6-character postal code is required.");
+                        tbPostalCode.Focus();
+                    }
+                }
+
+
             }
 
             // Validates that at least one of the phone numbers are entered
@@ -128,24 +179,39 @@ namespace Assignment2
             {
                 errorMessages.AppendLine("Please provide a home phone or a cell phone number.");
             }
-
-            string homePhone = tbHomePhone.Text;    // Validating home phone
-            bool isHomePhoneValid = ValidationHelper.IsValidPhoneNumber(homePhone, out string reformatHomePhone);
-            if (isHomePhoneValid)
+            else
             {
-                tbHomePhone.Text = reformatHomePhone;
+                string homePhone = tbHomePhone.Text;    // Validating home phone
+                bool isHomePhoneValid = ValidationHelper.IsValidPhoneNumber(homePhone, out string reformatHomePhone);
+                if (isHomePhoneValid)
+                {
+                    tbHomePhone.Text = reformatHomePhone;
+                }
+                else if (!string.IsNullOrEmpty(tbHomePhone.Text))
+                {
+                    errorMessages.AppendLine("Please provide a valid Home Phone number.");
+                    tbHomePhone.Focus();
+                }
+
+
+                string cellPhone = tbCellPhone.Text;    // Validating cell phone
+                bool isCellPhoneValid = ValidationHelper.IsValidPhoneNumber(cellPhone, out string reformatCellPhone);
+                if (isCellPhoneValid)
+                {
+                    tbCellPhone.Text = reformatCellPhone;
+                }
+                else if (!string.IsNullOrEmpty(tbCellPhone.Text))
+                {
+                    errorMessages.AppendLine("Please provide a valid Celphone number.");
+                    tbCellPhone.Focus();
+                }
+
             }
 
-            string cellPhone = tbCellPhone.Text;    // Validating cell phone
-            bool isCellPhoneValid = ValidationHelper.IsValidPhoneNumber(cellPhone, out string reformatCellPhone);
-            if (isCellPhoneValid)
-            {
-                tbCellPhone.Text = reformatCellPhone;
-            }
 
             ///////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////
-            
+
             if (string.IsNullOrEmpty(tbMakeModel.Text)) // Validates make and model
             {
                 errorMessages.AppendLine("Make and model of car are required.");
@@ -156,19 +222,24 @@ namespace Assignment2
                 tbMakeModel.Text = ValidationHelper.Capitalize(tbMakeModel.Text);
             }
 
-            string yearInput = tbYear.Text; // Validates that year follows current year + 1
-            bool isYearValid = ValidationHelper.IsYearValid(yearInput);
-            if (isYearValid)
+            //Adding this if, because Year is not mandatory
+            if (!string.IsNullOrEmpty(tbYear.Text))
             {
-                tbYear.Text = yearInput;
-            }
-            else
-            {
-                errorMessages.AppendLine("That is not a valid year.");
-                tbYear.Focus();
+                string yearInput = tbYear.Text; // Validates that year follows current year + 1
+                bool isYearValid = ValidationHelper.IsYearValid(yearInput);
+                if (isYearValid)
+                {
+                    tbYear.Text = yearInput;
+                }
+                else
+                {
+                    errorMessages.AppendLine("That is not a valid year.");
+                    tbYear.Focus();
+                }
             }
 
-            DateTime selectedDate = dateApptPicker.Value;   // Validates that date is in the future
+            //Adding the '.Date' to discard the time and get only the date
+            DateTime selectedDate = dateApptPicker.Value.Date;   // Validates that date is in the future
             if (ValidationHelper.IsDateFuture(selectedDate))
             {
                 dateApptPicker.Value = selectedDate;
@@ -176,9 +247,11 @@ namespace Assignment2
             else
             {
                 errorMessages.AppendLine("Appointment date is required and must be in the future.");
-                tbYear.Focus();
+                //Changed to dateApptPicker
+                dateApptPicker.Focus();
+                //tbYear.Focus();
             }
-            
+
             string errorMessage  = errorMessages.ToString().Trim(); // Prints all the errors for missing information.
 
             if (!string.IsNullOrEmpty(errorMessage))
@@ -188,16 +261,33 @@ namespace Assignment2
             else
             {
                 lblErrorMessage.Text = string.Empty;
+
+                //Only continues if there are no errors
+                
+                //Replacing the '\n' by ', '
+                string problems = richtbProblem.Text.Replace("\n", ", ");
+
+                string appointmentInfo = GetAppointmentInfo();
+
+                SaveToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName), appointmentInfo);
+
+                string GetAppointmentInfo()
+                {
+                    //Changed the comma for pipe "|" as requested
+                    //Adding the 'problems'
+                    //return $"Appointment Date: {dateApptPicker.Value.ToShortDateString()}|Name: {tbCustomerName.Text}|Address: {tbAddress.Text}|{tbCity.Text}|{tbProvince.Text}, {tbPostalCode.Text}|Phones: {tbHomePhone.Text} / {tbCellPhone.Text}|Email: {tbEmail.Text}|Car Info: {tbYear.Text} {tbMakeModel.Text}|Problem: {problems}";
+                    return $"Appointment Date: {selectedDate.ToShortDateString()}|Name: {tbCustomerName.Text}|Address: {tbAddress.Text}|{tbCity.Text}|{tbProvince.Text}, {tbPostalCode.Text}|Phones: {tbHomePhone.Text} / {tbCellPhone.Text}|Email: {tbEmail.Text}|Car Info: {tbYear.Text} {tbMakeModel.Text}|Problem: {problems}";
+                }
             }
 
-            string appointmentInfo = GetAppointmentInfo();
+            //Moved to the else above
 
-            SaveToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName), appointmentInfo);
-
-            string GetAppointmentInfo()
-            {
-                return $"Date: {dateApptPicker.Value}, Name: {tbCustomerName.Text}, Address: {tbAddress.Text}, {tbCity.Text}, {tbProvince.Text}, {tbPostalCode.Text}, Phones: {tbHomePhone.Text} / {tbCellPhone.Text}, Email: {tbEmail.Text}, Car Info: {tbYear.Text} {tbMakeModel.Text}";
-            }
+            //string appointmentInfo = GetAppointmentInfo();
+            //SaveToFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName), appointmentInfo);
+            //string GetAppointmentInfo()
+            //{
+            //    return $"Date: {dateApptPicker.Value}, Name: {tbCustomerName.Text}, Address: {tbAddress.Text}, {tbCity.Text}, {tbProvince.Text}, {tbPostalCode.Text}, Phones: {tbHomePhone.Text} / {tbCellPhone.Text}, Email: {tbEmail.Text}, Car Info: {tbYear.Text} {tbMakeModel.Text}";
+            //}
 
         }
 
@@ -215,7 +305,7 @@ namespace Assignment2
             tbMakeModel.Text= string.Empty;
             tbYear.Text= string.Empty;
             lblErrorMessage.Text = string.Empty;
-            dateApptPicker.Value = DateTime.Now;
+            dateApptPicker.Value = DateTime.Today;
         }
 
         // Fills some inputs in form with predefined data
@@ -250,10 +340,11 @@ namespace Assignment2
 
                 using (StreamWriter sw = new StreamWriter(filePath, true))
                 {
-                    if (!fileExists)
-                    {
-                        sw.WriteLine("Date | Name | Address | Phones | Email | Car info");
-                    }
+                    //Removed the 'header'
+                    //if (!fileExists)
+                    //{
+                    //    sw.WriteLine("Date | Name | Address | Phones | Email | Car info");
+                    //}
                     sw.WriteLine(content);
                 }
                 MessageBox.Show($"Appointment saved to: {filePath}", "Success");
